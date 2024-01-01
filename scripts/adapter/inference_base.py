@@ -68,7 +68,7 @@ def get_base_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--sd_ckpt',
         type=str,
-        default='models/sd-v1-4.ckpt',
+        default='models/Stable-diffusion/v1-5-pruned-emaonly.safetensors',
         help='path to checkpoint of stable diffusion model, both .ckpt and .safetensor are supported',
     )
 
@@ -155,7 +155,7 @@ def get_base_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--seed',
         type=int,
-        default=42,
+        default=-1,
     )
 
     parser.add_argument(
