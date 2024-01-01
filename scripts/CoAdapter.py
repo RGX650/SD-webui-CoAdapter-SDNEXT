@@ -1,4 +1,3 @@
-import modules.scripts as scripts
 import gradio as gr
 import os
 import copy
@@ -9,20 +8,24 @@ from modules.shared import opts, cmd_opts, state
 from functools import partial
 from itertools import chain
 import argparse
+
+import modules.scripts as scripts
 from scripts.adapter.inference_base import get_adapters
 from scripts.adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
 from scripts.adapter.modules.extra_condition import api
 from scripts.adapter.modules.encoders.adapter import CoAdapterFuser
+from scripts.adapter.util import get_hw
 from scripts.hook import UnetHook, ControlParams
-import torch
 from modules import scripts
+
+import torch
 import cv2
 from basicsr.utils import tensor2img
 import gc
 from huggingface_hub import hf_hub_url
 import subprocess
 import shlex
-from scripts.adapter.util import get_hw
+
 
 urls = {
     'TencentARC/T2I-Adapter':[
