@@ -26,7 +26,7 @@ def get_cond_model(opt, cond_type: ExtraCondition):
     if cond_type == ExtraCondition.sketch:
         from scripts.adapter.modules.extra_condition.model_edge import pidinet
         model = pidinet()
-        ckp = torch.load('models/T2I-Adapter/table5_pidinet.pth', map_location='cpu')['state_dict']
+        ckp = torch.load('extensions-builtin/sd-webui-controlnet/annotator/ckpts/table5_pidinet.pth', map_location='cpu')['state_dict']
         model.load_state_dict({k.replace('module.', ''): v for k, v in ckp.items()}, strict=True)
         model.to(opt.device)
         return model
@@ -37,9 +37,9 @@ def get_cond_model(opt, cond_type: ExtraCondition):
         from mmdet.apis import init_detector
         from mmpose.apis import init_pose_model
         det_config = os.path.join(scripts.basedir, 'configs/mm/faster_rcnn_r50_fpn_coco.py')
-        det_checkpoint = 'models/T2I-Adapter/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth'
+        det_checkpoint = 'models/adapter/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth'
         pose_config = os.path.join(scripts.basedir, 'configs/mm/hrnet_w48_coco_256x192.py')
-        pose_checkpoint = 'models/T2I-Adapter/hrnet_w48_coco_256x192-b9e0b3ab_20200708.pth'
+        pose_checkpoint = 'models/adapter/hrnet_w48_coco_256x192-b9e0b3ab_20200708.pth'
         det_config_mmcv = mmcv.Config.fromfile(det_config)
         det_model = init_detector(det_config_mmcv, det_checkpoint, device=opt.device)
         pose_config_mmcv = mmcv.Config.fromfile(pose_config)
