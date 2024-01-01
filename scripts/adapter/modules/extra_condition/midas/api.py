@@ -15,8 +15,8 @@ import modules.scripts as scripts
 # if not os.path.exists(os.path.join(scripts.basedir(),'models')):
 #     os.makedirs(os.path.join(scripts.basedir(),'models'))
 ISL_PATHS = {
-    "dpt_large": "models/T2I-Adapter/dpt_large-midas-2f21e586.pt",
-    "dpt_hybrid": "models/T2I-Adapter/dpt_hybrid-midas-501f0c75.pt",
+    "dpt_large": "extensions-builtin/sd-webui-controlnet/annotator/ckpts/dpt_large-midas-2f21e586.pt",
+    "dpt_hybrid": "extensions-builtin/sd-webui-controlnet/annotator/ckpts/dpt_hybrid-midas-501f0c75.pt",
     "midas_v21": "",
     "midas_v21_small": "",
 }
