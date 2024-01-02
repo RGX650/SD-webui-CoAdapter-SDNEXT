@@ -219,7 +219,7 @@ class Script(scripts.Script):
                                 im1 = gr.Image(source='upload', label="Image", interactive=True, visible=False, type="numpy")
                                 im2 = gr.Image(source='upload', label=cond_name, interactive=True, visible=False, type="numpy")
                                 cond_weight = gr.Slider(
-                                    label="w=", minimum=0, maximum=5, step=0.05, value=1, interactive=True)
+                                    label="w =", minimum=0, maximum=5, step=0.05, value=1, interactive=True)
 
                                 fn = partial(change_visible, im1, im2)
                                 btn1.change(fn=fn, inputs=[btn1], outputs=[im1, im2], queue=False)
