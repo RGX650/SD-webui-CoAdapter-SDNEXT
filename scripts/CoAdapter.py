@@ -44,94 +44,55 @@ import shlex
 
 
 annotator_dir = 'extensions-builtin/sd-webui-controlnet/annotator/ckpts/'
+pose_dir = 'extensions-builtin/sd-webui-controlnet/annotator/downloads/openpose/'
+pidinet_dir = 'extensions-builtin/sd-webui-controlnet/annotator/downloads/pidinet/'
 adapter_dir = 'models/adapter/'
 ckpt_dir = 'models/Stable-diffusion/'
 vae_dir = 'models/VAE/'
-#####################################################################
-urls_annotator = {
-    'TencentARC/T2I-Adapter':[
-        'third-party-models/body_pose_model.pth',
-        'third-party-models/table5_pidinet.pth']
-}
-if not os.path.exists(annotator_dir):
-    os.mkdir(annotator_dir)
 
-for repo in urls_annotator:
-    files = urls_annotator[repo]
-    for file in files:
-        url = hf_hub_url(repo, file)
-        name_ckp = url.split('/')[-1]
-        save_path = os.path.join(annotator_dir,name_ckp)
-        if not os.path.exists(save_path):
-            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 #####################################################################
-urls_mmpose = [
+
+urls_annotator = [
     'https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_1x_coco/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth',
     'https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w48_coco_256x192-b9e0b3ab_20200708.pth'
 ]
-for url in urls_mmpose:
+if not os.path.exists(annotator_dir):
+    os.mkdir(annotator_dir)
+    
+for url in urls_annotator:
     save_path = os.path.join(annotator_dir, os.path.basename(url))
     if not os.path.exists(save_path):
         subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+
 #####################################################################
-urls_adapter = {
-    'TencentARC/T2I-Adapter':[
-        'models/coadapter-canny-sd15v1.pth',
-        'models/coadapter-color-sd15v1.pth',
-        'models/coadapter-sketch-sd15v1.pth',
-        'models/coadapter-style-sd15v1.pth',
-        'models/coadapter-depth-sd15v1.pth',
-        'models/coadapter-fuser-sd15v1.pth']
+
+def download_file(url, save_path):
+    if not os.path.exists(save_path):
+        subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+
+directories = {
+    'pose': pose_dir,
+    'pidinet': pidinet_dir,
+    'adapter': adapter_dir,
+    'ckpt': ckpt_dir,
+    'vae': vae_dir
 }
-if not os.path.exists(adapter_dir):
-    os.mkdir(adapter_dir)
+urls = {
+    'pose': urls_pose,
+    'pidinet': urls_pidinet,
+    'adapter': urls_adapter,
+    'ckpt': urls_ckpt,
+    'vae': urls_vae
+}
+for key in urls:
+    for repo, files in urls[key].items():
+        for file in files:
+            url = hf_hub_url(repo, file)
+            filename = url.split('/')[-1]
+            save_path = os.path.join(directories[key], filename)
+            download_file(url, save_path)
 
-for repo in urls_adapter:
-    files = urls_adapter[repo]
-    for file in files:
-        url = hf_hub_url(repo, file)
-        name_ckp = url.split('/')[-1]
-        save_path = os.path.join(adapter_dir,name_ckp)
-        if not os.path.exists(save_path):
-            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 #####################################################################
-urls_ckpt = {
-    'runwayml/stable-diffusion-v1-5':['v1-5-pruned-emaonly.safetensors']}
-#ckpt_dir exists, no check needed
-for repo in urls_ckpt:
-    files = urls_ckpt[repo]
-    for file in files:
-        url = hf_hub_url(repo, file)
-        name_ckp = url.split('/')[-1]
-        save_path = os.path.join(ckpt_dir,name_ckp)
-        if not os.path.exists(save_path):
-            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
-#####################################################################
-urls_ckpt = {
-    'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt']}
-#ckpt_dir exists, no check needed
-for repo in urls_ckpt:
-    files = urls_ckpt[repo]
-    for file in files:
-        url = hf_hub_url(repo, file)
-        name_ckp = url.split('/')[-1]
-        save_path = os.path.join(ckpt_dir,name_ckp)
-        if not os.path.exists(save_path):
-            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
-#####################################################################
-urls_vae = {
-    'andite/anything-v4.0': ['anything-v4.0.vae.pt']}
-#vae_dir exists, no check needed
-for repo in urls_vae:
-    files = urls_vae[repo]
-    for file in files:
-        url = hf_hub_url(repo, file)
-        name_ckp = url.split('/')[-1]
-        save_path = os.path.join(vae_dir,name_ckp)
-        if not os.path.exists(save_path):
-            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
-#####################################################################
-
 
 DEFAULT_NEGATIVE_PROMPT = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                           'fewer digits, cropped, worst quality, low quality'
