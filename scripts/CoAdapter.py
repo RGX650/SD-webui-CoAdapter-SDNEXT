@@ -151,7 +151,6 @@ class Script(scripts.Script):
     def show(self, is_img2img):
         return scripts.AlwaysVisible #is_img2img
 
-
     def ui(self, is_img2img):
         btns = []
         ims1 = []
@@ -182,7 +181,13 @@ class Script(scripts.Script):
                                 im1 = gr.Image(source='upload', label="Image", interactive=True, visible=False, type="numpy")
                                 im2 = gr.Image(source='upload', label=cond_name, interactive=True, visible=False, type="numpy")
                                 cond_weight = gr.Slider(
-                                    label=value, minimum=0, maximum=5, step=0.05, value=1, interactive=True)
+                                    label=label=str(value), minimum=0, maximum=5, step=0.05, value=1, interactive=True)
+                                
+                                # Update label when the slider value changes
+                                def update_slider_label(sender, data):
+                                    cond_weight.label = str(data)  # Update label to match the slider value
+                                
+                                cond_weight.set_action(update_slider_label, 'value')  # Set up callback to update label
 
                                 fn = partial(change_visible, im1, im2)
                                 btn1.change(fn=fn, inputs=[btn1], outputs=[im1, im2], queue=False)
@@ -205,6 +210,7 @@ class Script(scripts.Script):
 
         return inps
 
+    
     def process(self, p, *args):
         unet = p.sd_model.model.diffusion_model
         if self.network_cur is not None:
