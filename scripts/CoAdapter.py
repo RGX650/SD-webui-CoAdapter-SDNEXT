@@ -1,7 +1,7 @@
 import gradio as gr
 import os
 import copy
-from modules import images, devices, ui, shared
+from modules import images, devices, ui, shared, sd_models, sd_vae, ui_components
 from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
@@ -64,6 +64,15 @@ for repo in urls_annotator:
         save_path = os.path.join(annotator_dir,name_ckp)
         if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+#####################################################################
+urls_mmpose = [
+    'https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_1x_coco/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth',
+    'https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w48_coco_256x192-b9e0b3ab_20200708.pth'
+]
+for url in urls_mmpose:
+    save_path = os.path.join(annotator_dir, os.path.basename(url))
+    if not os.path.exists(save_path):
+        subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 #####################################################################
 urls_adapter = {
     'TencentARC/T2I-Adapter':[
