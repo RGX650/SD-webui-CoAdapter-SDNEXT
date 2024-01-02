@@ -65,8 +65,11 @@ urls = {
     ],
 }
 
-if not os.path.exists(adapter_models_dir):
-    os.mkdir(adapter_models_dir)
+if not os.path.exists(annotator_dir):
+    os.mkdir(annotator_dir)
+
+if not os.path.exists(adapter_dir):
+    os.mkdir(adapter_dir)
 
 for repo in urls:
     files = urls[repo]
