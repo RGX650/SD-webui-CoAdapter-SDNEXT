@@ -9,12 +9,14 @@ from functools import partial
 from itertools import chain
 import argparse
 
+import sys
+sys.path.append("..")
 import modules.scripts as scripts
-from ..adapter.inference_base import get_adapters
-from ..adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
-from ..adapter.modules.extra_condition import api
-from ..adapter.modules.encoders.adapter import CoAdapterFuser
-from ..adapter.util import get_hw
+from adapter.inference_base import get_adapters
+from adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
+from adapter.modules.extra_condition import api
+from adapter.modules.encoders.adapter import CoAdapterFuser
+from adapter.util import get_hw
 from hook import UnetHook, ControlParams
 from modules import scripts
 
