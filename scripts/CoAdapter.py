@@ -66,24 +66,35 @@ for url in urls_annotator:
 
 #####################################################################
 
-def download_file(url, save_path):
-    if not os.path.exists(save_path):
-        subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+urls_pose = {'TencentARC/T2I-Adapter': ['third-party-models/body_pose_model.pth']}
+
+urls_pidinet = {'TencentARC/T2I-Adapter': ['third-party-models/table5_pidinet.pth']}
+
+urls_ckpt = {'runwayml/stable-diffusion-v1-5':['v1-5-pruned-emaonly.safetensors']}
+
+urls_adapter = {'TencentARC/T2I-Adapter':['models/coadapter-canny-sd15v1.pth',
+'models/coadapter-color-sd15v1.pth','models/coadapter-sketch-sd15v1.pth',
+'models/coadapter-style-sd15v1.pth','models/coadapter-depth-sd15v1.pth',
+'models/coadapter-fuser-sd15v1.pth']}
+
+urls = {
+    'pose': urls_pose,
+    'pidinet': urls_pidinet,
+    'ckpt': urls_ckpt,
+    'adapter': urls_adapter
+}
 
 directories = {
     'pose': pose_dir,
     'pidinet': pidinet_dir,
-    'adapter': adapter_dir,
     'ckpt': ckpt_dir,
-    'vae': vae_dir
+    'adapter': adapter_dir
 }
-urls = {
-    'pose': urls_pose,
-    'pidinet': urls_pidinet,
-    'adapter': urls_adapter,
-    'ckpt': urls_ckpt,
-    'vae': urls_vae
-}
+
+def download_file(url, save_path):
+    if not os.path.exists(save_path):
+        subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+
 for key in urls:
     for repo, files in urls[key].items():
         for file in files:
@@ -91,6 +102,30 @@ for key in urls:
             filename = url.split('/')[-1]
             save_path = os.path.join(directories[key], filename)
             download_file(url, save_path)
+
+#####################################################################
+
+urls_any = {'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt']}
+
+for repo in urls_any:
+    files = urls_any[repo]
+    for file in files:
+        url = hf_hub_url(repo, file)
+        name_ckp = url.split('/')[-1]
+        save_path = os.path.join(ckpt_dir,name_ckp)
+        if not os.path.exists(save_path):
+            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+
+urls_vae = {'andite/anything-v4.0': ['anything-v4.0.vae.pt']}
+
+for repo in urls_vae:
+    files = urls_vae[repo]
+    for file in files:
+        url = hf_hub_url(repo, file)
+        name_ckp = url.split('/')[-1]
+        save_path = os.path.join(vae_dir,name_ckp)
+        if not os.path.exists(save_path):
+            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 
 #####################################################################
 
