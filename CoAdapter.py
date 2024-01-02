@@ -65,7 +65,7 @@ supported_cond = ['style', 'color', 'sketch', 'depth', 'canny']
 class Params:
     def __init__(self):
         #self.sd_ckpt = 'models/T2I-Adapter/v1-5-pruned-emaonly.ckpt'
-        self.sd_ckpt = 'models/Stable-diffusion/v1-5-pruned-emaonly.ckpt'
+        self.sd_ckpt = 'models/Stable-diffusion/v1-5-pruned-emaonly.safetensors'
         self.vae_ckpt = None
 global_opt = Params()
 global_opt.config = os.path.join(scripts.basedir(),'configs/stable-diffusion/sd-v1-inference.yaml')
