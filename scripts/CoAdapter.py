@@ -42,36 +42,32 @@ from huggingface_hub import hf_hub_url
 import subprocess
 import shlex
 
+adapter_dir = 'models/adapter'
+
 urls = {
-    'TencentARC/T2I-Adapter': [
-        ('third-party-models/body_pose_model.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
-        ('third-party-models/table5_pidinet.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
-        ('models/coadapter-canny-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-color-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-sketch-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-style-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-depth-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-fuser-sd15v1.pth', 'models/adapter'),
+    'TencentARC/T2I-Adapter':[
+        'third-party-models/body_pose_model.pth', 'third-party-models/table5_pidinet.pth',
+        'models/coadapter-canny-sd15v1.pth',
+        'models/coadapter-color-sd15v1.pth',
+        'models/coadapter-sketch-sd15v1.pth',
+        'models/coadapter-style-sd15v1.pth',
+        'models/coadapter-depth-sd15v1.pth',
+        'models/coadapter-fuser-sd15v1.pth',
+
     ],
-    'runwayml/stable-diffusion-v1-5': [
-        ('v1-5-pruned-emaonly.safetensors', 'models/Stable-diffusion')
-    ],
-    'andite/anything-v4.0': [
-        ('anything-v4.5-pruned.ckpt', 'models/Stable-diffusion'),
-        ('anything-v4.0.vae.pt', 'models/VAE')
-    ],
+    'runwayml/stable-diffusion-v1-5': ['v1-5-pruned-emaonly.safetensors'],
+    'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt', 'anything-v4.0.vae.pt'],
 }
 
-if not os.path.exists('extensions-builtin/sd-webui-controlnet/annotator/ckpts'):
-    os.mkdir('extensions-builtin/sd-webui-controlnet/annotator/ckpts')
-if not os.path.exists('models/adapter'):
-    os.mkdir('models/adapter')
+if not os.path.exists(adapter_dir):
+    os.mkdir(adapter_dir)
 
 for repo in urls:
     files = urls[repo]
-    for file, destination in files:
+    for file in files:
         url = hf_hub_url(repo, file)
-        save_path = os.path.join(destination, os.path.basename(file))
+        name_ckp = url.split('/')[-1]
+        save_path = os.path.join(adapter_dir,name_ckp)
         if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 
