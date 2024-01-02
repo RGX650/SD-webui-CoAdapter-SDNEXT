@@ -10,7 +10,7 @@ from itertools import chain
 import argparse
 
 import sys
-sys.path.append("..")
+sys.path.append(".")
 import modules.scripts as scripts
 from adapter.inference_base import get_adapters
 from adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
