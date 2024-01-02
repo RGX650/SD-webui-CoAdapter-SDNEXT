@@ -13,7 +13,7 @@ from modules import scripts
 
 import sys
 # Add the parent directory to the Python path
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('.'))
 from adapter.inference_base import get_adapters
 from adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
 from adapter.modules.extra_condition import api
