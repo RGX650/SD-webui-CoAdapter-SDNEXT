@@ -14,12 +14,12 @@ from modules import scripts
 import sys
 # Add the current directory to the Python path
 sys.path.insert(0, os.path.abspath('.'))
-from adapter.inference_base import get_adapters
-from adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
-from adapter.modules.extra_condition import api
-from adapter.modules.encoders.adapter import CoAdapterFuser
-from adapter.util import get_hw
-from hook import UnetHook, ControlParams
+from scripts.adapter.inference_base import get_adapters
+from scripts.adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
+from scripts.adapter.modules.extra_condition import api
+from scripts.adapter.modules.encoders.adapter import CoAdapterFuser
+from scripts.adapter.util import get_hw
+from scripts.hook import UnetHook, ControlParams
 
 import torch
 import cv2
