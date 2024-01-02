@@ -42,28 +42,31 @@ from huggingface_hub import hf_hub_url
 import subprocess
 import shlex
 
+annotator_dir = 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'
+adapter_dir = 'models/adapter'
 
 urls = {
     'TencentARC/T2I-Adapter': [
-        ('third-party-models/body_pose_model.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
-        ('third-party-models/table5_pidinet.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts')
+        ('third-party-models/body_pose_model.pth', annotator_dir),
+        ('third-party-models/table5_pidinet.pth', annotator_dir),
+        ('models/coadapter-canny-sd15v1.pth', adapter_dir),
+        ('models/coadapter-color-sd15v1.pth', adapter_dir),
+        ('models/coadapter-sketch-sd15v1.pth', adapter_dir),
+        ('models/coadapter-style-sd15v1.pth', adapter_dir),
+        ('models/coadapter-depth-sd15v1.pth', adapter_dir),
+        ('models/coadapter-fuser-sd15v1.pth', adapter_dir),
     ],
     'runwayml/stable-diffusion-v1-5': [
-        ('models/v1-5-pruned-emaonly.safetensors', 'models/Stable-diffusion'),
-        ('models/anything-v4.5-pruned.ckpt', 'models/Stable-diffusion')
+        ('models/v1-5-pruned-emaonly.safetensors', 'models/Stable-diffusion')
     ],
     'andite/anything-v4.0': [
+        ('models/anything-v4.5-pruned.ckpt', 'models/Stable-diffusion'),
         ('models/anything-v4.0.vae.pt', 'models/VAE')
     ],
-    'models/adapter': [
-        ('models/coadapter-canny-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-color-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-sketch-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-style-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-depth-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-fuser-sd15v1.pth', 'models/adapter')
-    ]
 }
+
+if not os.path.exists(adapter_models_dir):
+    os.mkdir(adapter_models_dir)
 
 for repo in urls:
     files = urls[repo]
@@ -117,7 +120,7 @@ def on_ui_settings():
     section = ('CoAdapter', 'CO-ADAPTER')
     shared.opts.add_option('CoAdapter_enabled', shared.OptionInfo(False, 'Enable CoAdapters', section=section))
     shared.opts.add_option('resize_mode',shared.OptionInfo(default="Condition map consistency", label="Resize Mode", component=gr.Radio, component_args={"choices": ["Condition map consistency", "Slider resize"]}, section=section))
-    shared.opts.add_option('cond_tau',shared.OptionInfo(value=1.0, label="timestamp parameter that determines until which step the adapter is applied", component=gr.Slider, component_args={"minimum": 0.1, "maximum": 1.0, "step": 0.05}, section=section))
+    shared.opts.add_option('cond_tau',shared.OptionInfo(default=1.0, label="timestamp parameter that determines until which step the adapter is applied", component=gr.Slider, component_args={"minimum": 0.1, "maximum": 1.0, "step": 0.05}, section=section))
     
 script_callbacks.on_ui_settings(on_ui_settings)
 
