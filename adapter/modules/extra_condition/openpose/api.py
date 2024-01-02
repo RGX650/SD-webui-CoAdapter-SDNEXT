@@ -17,11 +17,11 @@ class OpenposeInference(nn.Module):
 
     def __init__(self):
         super().__init__()
-        body_modelpath = os.path.join('extensions-builtin', 'sd-webui-controlnet/annotator/ckpts', "body_pose_model.pth")
+        body_modelpath = os.path.join('extensions-builtin', 'sd-webui-controlnet/annotator/downloads/openpose', "body_pose_model.pth")
 
         if not os.path.exists(body_modelpath):
             from basicsr.utils.download_util import load_file_from_url
-            load_file_from_url(remote_model_path, model_dir='extensions-builtin/sd-webui-controlnet/annotator/ckpts')
+            load_file_from_url(remote_model_path, model_dir='extensions-builtin/sd-webui-controlnet/annotator/downloads/openpose')
 
         self.body_estimation = Body(body_modelpath)
 
