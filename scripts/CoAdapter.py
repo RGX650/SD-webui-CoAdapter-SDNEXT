@@ -218,7 +218,8 @@ class Script(scripts.Script):
                                     )
                                 im1 = gr.Image(source='upload', label="Image", interactive=True, visible=False, type="numpy")
                                 im2 = gr.Image(source='upload', label=cond_name, interactive=True, visible=False, type="numpy")
-                                cond_weight = gr.Slider(minimum=0, maximum=5, step=0.05, value=1, label=str(value), interactive=True)
+                                initial_value = 1  # Define the initial value for the slider
+                                cond_weight = gr.Slider(value=initial_value, minimum=0, maximum=5, step=0.05, label=str(initial_value), interactive=True)
                                 
                                 # Update label when the slider value changes
                                 def update_slider_label(sender, data):
