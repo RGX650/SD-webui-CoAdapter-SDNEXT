@@ -8,7 +8,9 @@ from modules.shared import opts, cmd_opts, state
 from functools import partial
 from itertools import chain
 import argparse
+import sys
 from modules import scripts, script_callbacks
+import modules.scripts as scripts
 
 from pathlib import Path
 try:
@@ -30,7 +32,7 @@ from adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
 from adapter.modules.extra_condition import api
 from adapter.modules.encoders.adapter import CoAdapterFuser
 from adapter.util import get_hw
-from .hook import UnetHook, ControlParams
+from scripts.hook import UnetHook, ControlParams
 
 import torch
 import cv2
