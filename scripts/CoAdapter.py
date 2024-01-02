@@ -42,38 +42,86 @@ from huggingface_hub import hf_hub_url
 import subprocess
 import shlex
 
-adapter_dir = 'models/adapter/'
+-----------------------------------------------------------------------
 annotator_dir = 'extensions-builtin/sd-webui-controlnet/annotator/ckpts/'
+adapter_dir = 'models/adapter/'
 ckpt_dir = 'models/Stable-diffusion/'
 vae_dir = 'models/VAE/'
+-----------------------------------------------------------------------
+urls_annotator = {
+    'TencentARC/T2I-Adapter':[
+        'third-party-models/body_pose_model.pth',
+        'third-party-models/table5_pidinet.pth']
+}
+if not os.path.exists(annotator_dir):
+    os.mkdir(annotator_dir)
 
-urls = {
-    'TencentARC/T2I-Adapter': [
-        'third-party-models/body_pose_model.pth', 'third-party-models/table5_pidinet.pth',
+for repo in urls_annotator:
+    files = urls_annotator[repo]
+    for file in files:
+        url = hf_hub_url(repo, file)
+        name_ckp = url.split('/')[-1]
+        save_path = os.path.join(annotator_dir,name_ckp)
+        if not os.path.exists(save_path):
+            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+-----------------------------------------------------------------------
+urls_adapter = {
+    'TencentARC/T2I-Adapter':[
         'models/coadapter-canny-sd15v1.pth',
         'models/coadapter-color-sd15v1.pth',
         'models/coadapter-sketch-sd15v1.pth',
         'models/coadapter-style-sd15v1.pth',
         'models/coadapter-depth-sd15v1.pth',
-        'models/coadapter-fuser-sd15v1.pth',
-    ],
-    'runwayml/stable-diffusion-v1-5': ['v1-5-pruned-emaonly.safetensors'],
-    'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt', 'anything-v4.0.vae.pt'],
+        'models/coadapter-fuser-sd15v1.pth']
 }
-
-if not os.path.exists(annotator_dir):
-    os.mkdir(annotator_dir)
 if not os.path.exists(adapter_dir):
     os.mkdir(adapter_dir)
 
-for repo in urls:
-    files = urls[repo]
+for repo in urls_adapter:
+    files = urls_adapter[repo]
     for file in files:
         url = hf_hub_url(repo, file)
         name_ckp = url.split('/')[-1]
         save_path = os.path.join(adapter_dir,name_ckp)
         if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+-----------------------------------------------------------------------
+urls_ckpt = {
+    'runwayml/stable-diffusion-v1-5':['v1-5-pruned-emaonly.safetensors']}
+#ckpt_dir exists, no check needed
+for repo in urls_ckpt:
+    files = urls_ckpt[repo]
+    for file in files:
+        url = hf_hub_url(repo, file)
+        name_ckp = url.split('/')[-1]
+        save_path = os.path.join(ckpt_dir,name_ckp)
+        if not os.path.exists(save_path):
+            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+-----------------------------------------------------------------------
+urls_ckpt = {
+    'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt']}
+#ckpt_dir exists, no check needed
+for repo in urls_ckpt:
+    files = urls_ckpt[repo]
+    for file in files:
+        url = hf_hub_url(repo, file)
+        name_ckp = url.split('/')[-1]
+        save_path = os.path.join(ckpt_dir,name_ckp)
+        if not os.path.exists(save_path):
+            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+-----------------------------------------------------------------------
+urls_vae = {
+    'andite/anything-v4.0': ['anything-v4.0.vae.pt']}
+#vae_dir exists, no check needed
+for repo in urls_vae:
+    files = urls_vae[repo]
+    for file in files:
+        url = hf_hub_url(repo, file)
+        name_ckp = url.split('/')[-1]
+        save_path = os.path.join(vae_dir,name_ckp)
+        if not os.path.exists(save_path):
+            subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+-----------------------------------------------------------------------
 
 
 DEFAULT_NEGATIVE_PROMPT = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
@@ -170,7 +218,7 @@ class Script(scripts.Script):
                                     )
                                 im1 = gr.Image(source='upload', label="Image", interactive=True, visible=False, type="numpy")
                                 im2 = gr.Image(source='upload', label=cond_name, interactive=True, visible=False, type="numpy")
-                                cond_weight = gr.Slider(label=str(value), minimum=0, maximum=5, step=0.05, value=1, interactive=True)
+                                cond_weight = gr.Slider(minimum=0, maximum=5, step=0.05, value=1, label=str(value), interactive=True)
                                 
                                 # Update label when the slider value changes
                                 def update_slider_label(sender, data):
