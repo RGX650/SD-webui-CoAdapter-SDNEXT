@@ -1,7 +1,7 @@
 import gradio as gr
 import os
 import copy
-from modules import images, devices, ui
+from modules import images, devices, ui, shared
 from modules.processing import process_images, Processed
 from modules.processing import Processed
 from modules.shared import opts, cmd_opts, state
@@ -46,28 +46,32 @@ import shlex
 urls = {
     'TencentARC/T2I-Adapter': [
         ('third-party-models/body_pose_model.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
-        ('third-party-models/table5_pidinet.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
-        ('models/coadapter-canny-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-color-sd15v1.pth', 'models/adapter'),
+        ('third-party-models/table5_pidinet.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts')
+    ],
+    'runwayml/stable-diffusion-v1-5': [
+        ('models/v1-5-pruned-emaonly.safetensors', 'models/Stable-diffusion'),
+        ('models/anything-v4.5-pruned.ckpt', 'models/Stable-diffusion')
+    ],
+    'andite/anything-v4.0': [
+        ('models/anything-v4.0.vae.pt', 'models/VAE')
+    ],
+    'models/adapter': [
         ('models/coadapter-canny-sd15v1.pth', 'models/adapter'),
         ('models/coadapter-color-sd15v1.pth', 'models/adapter'),
         ('models/coadapter-sketch-sd15v1.pth', 'models/adapter'),
         ('models/coadapter-style-sd15v1.pth', 'models/adapter'),
         ('models/coadapter-depth-sd15v1.pth', 'models/adapter'),
-        ('models/coadapter-fuser-sd15v1.pth', 'models/adapter'),
-    ],
-    'runwayml/stable-diffusion-v1-5': [
-        ('v1-5-pruned-emaonly.ckpt', 'models/Stable-diffusion'),
-    ],
-    'andite/anything-v4.0': [
-        ('anything-v4.5-pruned.ckpt', 'models/Stable-diffusion'),
-        ('anything-v4.0.vae.pt', 'models/VAE'),
-    ],
+        ('models/coadapter-fuser-sd15v1.pth', 'models/adapter')
+    ]
 }
 
-adapter_models_dir = 'models/adapter'
-if not os.path.exists(adapter_models_dir):
-    os.mkdir(adapter_models_dir)
+for repo in urls:
+    files = urls[repo]
+    for file, destination in files:
+        url = hf_hub_url(repo, file)
+        save_path = os.path.join(destination, os.path.basename(file))
+        if not os.path.exists(save_path):
+            subprocess.run(shlex.split(f'wget {url} -O {save_path}')))
 
 for repo in urls:
     files = urls[repo]
