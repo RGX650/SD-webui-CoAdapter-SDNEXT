@@ -42,12 +42,12 @@ from huggingface_hub import hf_hub_url
 import subprocess
 import shlex
 
------------------------------------------------------------------------
+
 annotator_dir = 'extensions-builtin/sd-webui-controlnet/annotator/ckpts/'
 adapter_dir = 'models/adapter/'
 ckpt_dir = 'models/Stable-diffusion/'
 vae_dir = 'models/VAE/'
------------------------------------------------------------------------
+#####################################################################
 urls_annotator = {
     'TencentARC/T2I-Adapter':[
         'third-party-models/body_pose_model.pth',
@@ -64,7 +64,7 @@ for repo in urls_annotator:
         save_path = os.path.join(annotator_dir,name_ckp)
         if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
------------------------------------------------------------------------
+#####################################################################
 urls_adapter = {
     'TencentARC/T2I-Adapter':[
         'models/coadapter-canny-sd15v1.pth',
@@ -85,7 +85,7 @@ for repo in urls_adapter:
         save_path = os.path.join(adapter_dir,name_ckp)
         if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
------------------------------------------------------------------------
+#####################################################################
 urls_ckpt = {
     'runwayml/stable-diffusion-v1-5':['v1-5-pruned-emaonly.safetensors']}
 #ckpt_dir exists, no check needed
@@ -97,7 +97,7 @@ for repo in urls_ckpt:
         save_path = os.path.join(ckpt_dir,name_ckp)
         if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
------------------------------------------------------------------------
+#####################################################################
 urls_ckpt = {
     'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt']}
 #ckpt_dir exists, no check needed
@@ -109,7 +109,7 @@ for repo in urls_ckpt:
         save_path = os.path.join(ckpt_dir,name_ckp)
         if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
------------------------------------------------------------------------
+#####################################################################
 urls_vae = {
     'andite/anything-v4.0': ['anything-v4.0.vae.pt']}
 #vae_dir exists, no check needed
@@ -121,7 +121,7 @@ for repo in urls_vae:
         save_path = os.path.join(vae_dir,name_ckp)
         if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
------------------------------------------------------------------------
+#####################################################################
 
 
 DEFAULT_NEGATIVE_PROMPT = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
