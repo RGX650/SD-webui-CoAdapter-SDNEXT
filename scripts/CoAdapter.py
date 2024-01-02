@@ -154,7 +154,7 @@ def change_visible(im1, im2, val):
     if val == "Image":
         outputs[im1] = gr.update(visible=True)
         outputs[im2] = gr.update(visible=False)
-    elif val == "Nothing":
+    elif val == "None":
         outputs[im1] = gr.update(visible=False)
         outputs[im2] = gr.update(visible=False)
     else:
@@ -166,8 +166,8 @@ def change_visible(im1, im2, val):
 def on_ui_settings():
     section = ('CoAdapter', 'CO-ADAPTER')
     shared.opts.add_option('CoAdapter_enabled', shared.OptionInfo(False, 'Enable CoAdapters', section=section))
-    shared.opts.add_option('resize_mode',shared.OptionInfo(default="Condition map consistency", label="Resize Mode", component=gr.Radio, component_args={"choices": ["Condition map consistency", "Slider resize"]}, section=section))
-    shared.opts.add_option('cond_tau',shared.OptionInfo(default=1.0, label="timestamp parameter that determines until which step the adapter is applied", component=gr.Slider, component_args={"minimum": 0.1, "maximum": 1.0, "step": 0.05}, section=section))
+    shared.opts.add_option('resize_mode',shared.OptionInfo(default="Conditional Map Consistency", label="Resize Mode", component=gr.Radio, component_args={"choices": ["Conditional Map Consistency", "Manual Resize"]}, section=section))
+    shared.opts.add_option('cond_tau',shared.OptionInfo(default=1.0, label="Ending Control Step", component=gr.Slider, component_args={"minimum": 0.1, "maximum": 1.0, "step": 0.05}, section=section))
     
 script_callbacks.on_ui_settings(on_ui_settings)
 
@@ -197,29 +197,29 @@ class Script(scripts.Script):
         with gr.Group():
             with gr.Accordion("CoAdapter", open=False):
                 enabled = gr.Checkbox(label='Enable CoAdapters', value=False)
-                resize_mode = gr.Radio(choices=['Condition map consistency', 'Slider resize'], value='Condition map consistency', label="Resize Mode")
+                resize_mode = gr.Radio(choices=['Conditional Map Consistency', 'Manual Resize'], value='Conditional Map Consistency', label="Resize Mode")
                 with gr.Row():
                     for cond_name in supported_cond:
                         with gr.Box():
                             with gr.Column():
                                 if cond_name == 'style':
                                     btn1 = gr.Radio(
-                                    choices=["Image", "Nothing"],
-                                    label=f"Input type for {cond_name}",
+                                    choices=["Image", "None"],
+                                    label=f"CoAdapter {cond_name}",
                                     interactive=True,
-                                    value="Nothing",
+                                    value="None",
                                 )
                                 else:
                                     btn1 = gr.Radio(
-                                        choices=["Image", cond_name, "Nothing"],
+                                        choices=["Image", cond_name, "None"],
                                         label=f"Input type for {cond_name}",
                                         interactive=True,
-                                        value="Nothing",
+                                        value="None",
                                     )
                                 im1 = gr.Image(source='upload', label="Image", interactive=True, visible=False, type="numpy")
                                 im2 = gr.Image(source='upload', label=cond_name, interactive=True, visible=False, type="numpy")
                                 cond_weight = gr.Slider(
-                                    label="weight", minimum=0, maximum=5, step=0.05, value=1, interactive=True)
+                                    label="w =", minimum=0, maximum=5, step=0.05, value=1, interactive=True)
 
                                 fn = partial(change_visible, im1, im2)
                                 btn1.change(fn=fn, inputs=[btn1], outputs=[im1, im2], queue=False)
@@ -231,7 +231,7 @@ class Script(scripts.Script):
 
                 with gr.Column():
                     cond_tau = gr.Slider(
-                        label="timestamp parameter that determines until which step the adapter is applied",
+                        label="Ending Control Step",
                         value=1.0,
                         minimum=0.1,
                         maximum=1.0,
@@ -265,10 +265,10 @@ class Script(scripts.Script):
         ims2 = []
 
         # resize all the images to the same size
-        if opt.resize_mode == 'Condition map consistency':
+        if opt.resize_mode == 'Conditional Map Consistency':
             for idx, (b, im1, im2, cond_weight) in enumerate(zip(*inps)):
                 if idx > 0:
-                    if b != 'Nothing' and (im1 is not None or im2 is not None):
+                    if b != 'None' and (im1 is not None or im2 is not None):
                         if im1 is not None:
                             h, w, _ = im1.shape
                         else:
@@ -278,7 +278,7 @@ class Script(scripts.Script):
         # else:
 
         for idx, (b, im1, im2, cond_weight) in enumerate(zip(*inps)):
-            if b != 'Nothing':
+            if b != 'None':
                 if im1 is not None:
                     im1 = cv2.resize(im1, (w, h), interpolation=cv2.INTER_CUBIC)
                 if im2 is not None:
@@ -290,7 +290,7 @@ class Script(scripts.Script):
         activated_conds = []
         for idx, (b, im1, im2, cond_weight) in enumerate(zip(*inps)):
             cond_name = supported_cond[idx]
-            if b == 'Nothing':
+            if b == 'None':
                 if cond_name in self.adapters: # save gpu memory
                     self.adapters[cond_name]['model'] = self.adapters[cond_name]['model'].cpu()
             else:
