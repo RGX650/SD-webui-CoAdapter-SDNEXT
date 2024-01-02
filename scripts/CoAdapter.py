@@ -30,7 +30,7 @@ from adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
 from adapter.modules.extra_condition import api
 from adapter.modules.encoders.adapter import CoAdapterFuser
 from adapter.util import get_hw
-from hook import UnetHook, ControlParams
+from .hook import UnetHook, ControlParams
 
 import torch
 import cv2
