@@ -71,15 +71,8 @@ for repo in urls:
         url = hf_hub_url(repo, file)
         save_path = os.path.join(destination, os.path.basename(file))
         if not os.path.exists(save_path):
-            subprocess.run(shlex.split(f'wget {url} -O {save_path}')))
-
-for repo in urls:
-    files = urls[repo]
-    for file, destination in files:
-        url = hf_hub_url(repo, file)
-        save_path = os.path.join(destination, os.path.basename(file))
-        if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
+
 
 DEFAULT_NEGATIVE_PROMPT = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
                           'fewer digits, cropped, worst quality, low quality'
