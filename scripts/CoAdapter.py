@@ -8,17 +8,18 @@ from modules.shared import opts, cmd_opts, state
 from functools import partial
 from itertools import chain
 import argparse
-print (os.getcwd())
-import sys
-sys.path.append(".")
 import modules.scripts as scripts
+from modules import scripts
+
+import sys
+# Add the parent directory to the Python path
+sys.path.insert(0, os.path.abspath('..'))
 from adapter.inference_base import get_adapters
 from adapter.modules.extra_condition.api import ExtraCondition, get_cond_model
 from adapter.modules.extra_condition import api
 from adapter.modules.encoders.adapter import CoAdapterFuser
 from adapter.util import get_hw
 from hook import UnetHook, ControlParams
-from modules import scripts
 
 import torch
 import cv2
@@ -44,14 +45,14 @@ urls = {
     'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt', 'anything-v4.0.vae.pt'],
 }
 
-if os.path.exists('models/control/adapter') == False:
-    os.mkdir('models/control/adapter')
+if os.path.exists('models/adapter') == False:
+    os.mkdir('models/adapter')
 for repo in urls:
     files = urls[repo]
     for file in files:
         url = hf_hub_url(repo, file)
         name_ckp = url.split('/')[-1]
-        save_path = os.path.join('models/control/adapter',name_ckp)
+        save_path = os.path.join('models/adapter',name_ckp)
         if os.path.exists(save_path) == False:
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 
@@ -69,7 +70,7 @@ class Params:
 global_opt = Params()
 global_opt.config = os.path.join(scripts.basedir(),'configs/stable-diffusion/sd-v1-inference.yaml')
 for cond_name in supported_cond:
-    setattr(global_opt, f'{cond_name}_adapter_ckpt', f'models/control/adapter/coadapter-{cond_name}-sd15v1.pth')
+    setattr(global_opt, f'{cond_name}_adapter_ckpt', f'models/adapter/coadapter-{cond_name}-sd15v1.pth')
 global_opt.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 global_opt.max_resolution = 512 * 512
 global_opt.resize_short_edge = 512 #None
@@ -99,7 +100,7 @@ class Script(scripts.Script):
         self.adapters = {}
         self.cond_models = {}
         self.coadapter_fuser = CoAdapterFuser(unet_channels=[320, 640, 1280, 1280], width=768, num_head=8, n_layes=3)
-        self.coadapter_fuser.load_state_dict(torch.load(f'models/control/adapter/coadapter-fuser-sd15v1.pth'))
+        self.coadapter_fuser.load_state_dict(torch.load(f'models/adapter/coadapter-fuser-sd15v1.pth'))
         self.coadapter_fuser = self.coadapter_fuser.to(devices.get_device_for('T2I-Adapter'))
         self.network_cur = None
 
