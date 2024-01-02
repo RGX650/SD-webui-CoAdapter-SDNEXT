@@ -44,29 +44,37 @@ import shlex
 
 
 urls = {
-    'TencentARC/T2I-Adapter':[
-        'third-party-models/body_pose_model.pth', 'third-party-models/table5_pidinet.pth',
-        'models/coadapter-canny-sd15v1.pth',
-        'models/coadapter-color-sd15v1.pth',
-        'models/coadapter-sketch-sd15v1.pth',
-        'models/coadapter-style-sd15v1.pth',
-        'models/coadapter-depth-sd15v1.pth',
-        'models/coadapter-fuser-sd15v1.pth',
-
+    'TencentARC/T2I-Adapter': [
+        ('third-party-models/body_pose_model.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
+        ('third-party-models/table5_pidinet.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
+        ('models/coadapter-canny-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-color-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-canny-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-color-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-sketch-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-style-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-depth-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-fuser-sd15v1.pth', 'models/adapter'),
     ],
-    'runwayml/stable-diffusion-v1-5': ['v1-5-pruned-emaonly.ckpt'],
-    'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt', 'anything-v4.0.vae.pt'],
+    'runwayml/stable-diffusion-v1-5': [
+        ('v1-5-pruned-emaonly.ckpt', 'models/Stable-diffusion'),
+    ],
+    'andite/anything-v4.0': [
+        ('anything-v4.5-pruned.ckpt', 'models/Stable-diffusion'),
+        ('anything-v4.0.vae.pt', 'models/VAE'),
+    ],
 }
 
-if os.path.exists('models/adapter') == False:
-    os.mkdir('models/adapter')
+adapter_models_dir = 'models/adapter'
+if not os.path.exists(adapter_models_dir):
+    os.mkdir(adapter_models_dir)
+
 for repo in urls:
     files = urls[repo]
-    for file in files:
+    for file, destination in files:
         url = hf_hub_url(repo, file)
-        name_ckp = url.split('/')[-1]
-        save_path = os.path.join('models/adapter',name_ckp)
-        if os.path.exists(save_path) == False:
+        save_path = os.path.join(destination, os.path.basename(file))
+        if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 
 DEFAULT_NEGATIVE_PROMPT = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, ' \
@@ -77,7 +85,6 @@ supported_cond = ['style', 'color', 'sketch', 'depth', 'canny']
 # config
 class Params:
     def __init__(self):
-        #self.sd_ckpt = 'models/T2I-Adapter/v1-5-pruned-emaonly.ckpt'
         self.sd_ckpt = 'models/Stable-diffusion/v1-5-pruned-emaonly.safetensors'
         self.vae_ckpt = None
 global_opt = Params()
