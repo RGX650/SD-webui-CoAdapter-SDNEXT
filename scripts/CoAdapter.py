@@ -71,18 +71,8 @@ for repo in urls:
     for file in files:
         url = hf_hub_url(repo, file)
         name_ckp = url.split('/')[-1]
-        save_path = ''
-
-        if file in ['third-party-models/body_pose_model.pth', 'third-party-models/table5_pidinet.pth']:
-            save_path = os.path.join(annotator_dir, name_ckp)
-        elif file.startswith('coadapter'):
-            save_path = os.path.join(adapter_dir, name_ckp)
-        elif file == 'v1-5-pruned-emaonly.safetensors' or file == 'anything-v4.5-pruned.ckpt':
-            save_path = os.path.join(ckpt_dir, name_ckp)
-        elif file == 'anything-v4.0.vae.pt':
-            save_path = os.path.join(vae_dir, name_ckp)
-
-        if save_path and not os.path.exists(save_path):
+        save_path = os.path.join(adapter_dir,name_ckp)
+        if not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 
 
