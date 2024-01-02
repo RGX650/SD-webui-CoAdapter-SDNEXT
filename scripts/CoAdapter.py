@@ -42,34 +42,30 @@ from huggingface_hub import hf_hub_url
 import subprocess
 import shlex
 
-annotator_dir = 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'
-adapter_dir = 'models/adapter'
-
 urls = {
     'TencentARC/T2I-Adapter': [
-        ('third-party-models/body_pose_model.pth', annotator_dir),
-        ('third-party-models/table5_pidinet.pth', annotator_dir),
-        ('models/coadapter-canny-sd15v1.pth', adapter_dir),
-        ('models/coadapter-color-sd15v1.pth', adapter_dir),
-        ('models/coadapter-sketch-sd15v1.pth', adapter_dir),
-        ('models/coadapter-style-sd15v1.pth', adapter_dir),
-        ('models/coadapter-depth-sd15v1.pth', adapter_dir),
-        ('models/coadapter-fuser-sd15v1.pth', adapter_dir),
+        ('third-party-models/body_pose_model.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
+        ('third-party-models/table5_pidinet.pth', 'extensions-builtin/sd-webui-controlnet/annotator/ckpts'),
+        ('models/coadapter-canny-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-color-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-sketch-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-style-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-depth-sd15v1.pth', 'models/adapter'),
+        ('models/coadapter-fuser-sd15v1.pth', 'models/adapter'),
     ],
     'runwayml/stable-diffusion-v1-5': [
-        ('models/v1-5-pruned-emaonly.safetensors', 'models/Stable-diffusion')
+        ('v1-5-pruned-emaonly.safetensors', 'models/Stable-diffusion')
     ],
     'andite/anything-v4.0': [
-        ('models/anything-v4.5-pruned.ckpt', 'models/Stable-diffusion'),
-        ('models/anything-v4.0.vae.pt', 'models/VAE')
+        ('anything-v4.5-pruned.ckpt', 'models/Stable-diffusion'),
+        ('anything-v4.0.vae.pt', 'models/VAE')
     ],
 }
 
-if not os.path.exists(annotator_dir):
-    os.mkdir(annotator_dir)
-
-if not os.path.exists(adapter_dir):
-    os.mkdir(adapter_dir)
+if not os.path.exists('extensions-builtin/sd-webui-controlnet/annotator/ckpts'):
+    os.mkdir('extensions-builtin/sd-webui-controlnet/annotator/ckpts')
+if not os.path.exists('models/adapter'):
+    os.mkdir('models/adapter')
 
 for repo in urls:
     files = urls[repo]
