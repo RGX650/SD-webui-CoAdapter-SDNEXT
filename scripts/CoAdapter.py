@@ -164,7 +164,7 @@ def change_visible(im1, im2, val):
 
 
 def on_ui_settings():
-    section = ('CoAdapter', 'CO-ADAPTER')
+    section = ('CoAdapters', 'Co-Adapters')
     shared.opts.add_option('CoAdapter_enabled', shared.OptionInfo(False, 'Enable CoAdapters', section=section))
     shared.opts.add_option('resize_mode',shared.OptionInfo(default="Conditional Map Consistency", label="Resize Mode", component=gr.Radio, component_args={"choices": ["Conditional Map Consistency", "Manual Resize"]}, section=section))
     shared.opts.add_option('cond_tau',shared.OptionInfo(default=1.0, label="Ending Control Step", component=gr.Slider, component_args={"minimum": 0.1, "maximum": 1.0, "step": 0.05}, section=section))
