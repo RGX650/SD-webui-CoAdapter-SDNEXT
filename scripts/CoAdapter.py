@@ -8,7 +8,7 @@ from modules.shared import opts, cmd_opts, state
 from functools import partial
 from itertools import chain
 import argparse
-
+print (os.getcwd())
 import sys
 sys.path.append(".")
 import modules.scripts as scripts
@@ -44,8 +44,8 @@ urls = {
     'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt', 'anything-v4.0.vae.pt'],
 }
 
-if os.path.exists('models/adapter') == False:
-    os.mkdir('models/adapter')
+if os.path.exists('models/control/adapter') == False:
+    os.mkdir('models/control/adapter')
 for repo in urls:
     files = urls[repo]
     for file in files:
