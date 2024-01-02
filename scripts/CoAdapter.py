@@ -43,9 +43,12 @@ import subprocess
 import shlex
 
 adapter_dir = 'models/adapter/'
+annotator_dir = 'extensions-builtin/sd-webui-controlnet/annotator/ckpts/'
+ckpt_dir = 'models/Stable-diffusion/'
+vae_dir = 'models/VAE/'
 
 urls = {
-    'TencentARC/T2I-Adapter':[
+    'TencentARC/T2I-Adapter': [
         'third-party-models/body_pose_model.pth', 'third-party-models/table5_pidinet.pth',
         'models/coadapter-canny-sd15v1.pth',
         'models/coadapter-color-sd15v1.pth',
@@ -53,12 +56,13 @@ urls = {
         'models/coadapter-style-sd15v1.pth',
         'models/coadapter-depth-sd15v1.pth',
         'models/coadapter-fuser-sd15v1.pth',
-
     ],
     'runwayml/stable-diffusion-v1-5': ['v1-5-pruned-emaonly.safetensors'],
     'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt', 'anything-v4.0.vae.pt'],
 }
 
+if not os.path.exists(annotator_dir):
+    os.mkdir(annotator_dir)
 if not os.path.exists(adapter_dir):
     os.mkdir(adapter_dir)
 
@@ -67,8 +71,18 @@ for repo in urls:
     for file in files:
         url = hf_hub_url(repo, file)
         name_ckp = url.split('/')[-1]
-        save_path = os.path.join(adapter_dir,name_ckp)
-        if not os.path.exists(save_path):
+        save_path = ''
+
+        if file in ['third-party-models/body_pose_model.pth', 'third-party-models/table5_pidinet.pth']:
+            save_path = os.path.join(annotator_dir, name_ckp)
+        elif file.startswith('coadapter'):
+            save_path = os.path.join(adapter_dir, name_ckp)
+        elif file == 'v1-5-pruned-emaonly.safetensors' or file == 'anything-v4.5-pruned.ckpt':
+            save_path = os.path.join(ckpt_dir, name_ckp)
+        elif file == 'anything-v4.0.vae.pt':
+            save_path = os.path.join(vae_dir, name_ckp)
+
+        if save_path and not os.path.exists(save_path):
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 
 
@@ -168,7 +182,7 @@ class Script(scripts.Script):
                                 im1 = gr.Image(source='upload', label="Image", interactive=True, visible=False, type="numpy")
                                 im2 = gr.Image(source='upload', label=cond_name, interactive=True, visible=False, type="numpy")
                                 cond_weight = gr.Slider(
-                                    label="Condition weight", minimum=0, maximum=5, step=0.05, value=1, interactive=True)
+                                    label=value, minimum=0, maximum=5, step=0.05, value=1, interactive=True)
 
                                 fn = partial(change_visible, im1, im2)
                                 btn1.change(fn=fn, inputs=[btn1], outputs=[im1, im2], queue=False)
