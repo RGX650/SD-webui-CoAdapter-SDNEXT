@@ -150,7 +150,7 @@ def load_model_from_config(config, ckpt, vae_ckpt=None, verbose=False):
         print(u)
 
     if 'anything' in ckpt.lower() and vae_ckpt is None:
-        vae_ckpt = 'models/anything-v4.0.vae.pt'
+        vae_ckpt = 'models/VAE/anything-v4.0.vae.pt'
 
     if vae_ckpt is not None and vae_ckpt != 'None':
         print(f"Loading vae model from {vae_ckpt}")
