@@ -42,7 +42,7 @@ from huggingface_hub import hf_hub_url
 import subprocess
 import shlex
 
-adapter_dir = 'models/adapter'
+adapter_dir = 'models/adapter/'
 
 urls = {
     'TencentARC/T2I-Adapter':[
